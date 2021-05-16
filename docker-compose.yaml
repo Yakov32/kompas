@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./:/symfony
+    container_name: kompas-nginx
+    restart: always
+    ports:
+      - '8085:80'
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+    volumes:
+      - ./:/symfony
+    container_name: kompas-php
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql:/var/lib/mysql
+    container_name: kompas-mysql
+    restart: always
+    environment:
+      - "MYSQL_ROOT_PASSWORD=ro"
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '33333:80'
+    environment:
+      PMA_HOST: mysql
+      UPLOAD_LIMIT: 4953500000 kb
+
+volumes:
+  mysql:
