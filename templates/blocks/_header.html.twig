@@ -1,0 +1,57 @@
+{% block header %}
+    <header>
+        <nav class="navbar navbar-expand-lg  bg-light header-logo">
+            <div class="container-fluid">
+                <a class=" w-100" href="#"><img src="/assets/logo.jpg"  width="100%" alt="LOGO"></a>
+            </div>
+        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light header-menu">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-5 mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href={{ path('index') }}>Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href={{ path('products_all') }}>Товары</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">О нас</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex w-50" action={{ path('search')}} method="get">
+                        <input class="form-control me-2" name="q" type="search" placeholder="Введите текст" aria-label="Search">
+                        <button class="btn btn-outline-dark" type="submit">Поиск</button>
+                    </form>
+
+                    <form class="d-flex">
+                        <div class="dropdown m-lg-2 m-sm-0">
+                            <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Каталог
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {% for category in categories %}
+                                    <li><a class="dropdown-item" href={{ path('products_by_category', {'category':category.route}) }}>{{ category.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </nav>
+
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="message-close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </header>
+{% endblock %}

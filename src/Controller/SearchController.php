@@ -20,7 +20,7 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route ("/search")
+     * @Route ("/search", name="search")
      */
     public function searchByQuery(Request $request)
     {
@@ -29,9 +29,24 @@ class SearchController extends AbstractController
         $products = $this->productSearcher->searchByName($query);
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
 
-        return $this->render('product/all_products.html.twig',
+        return $this->render('search/searched-products.html.twig',
             [
                 'products' => $products,
                 'categories' => $categories]);
+    }
+
+    /**
+     * @Route ("/search-filter", name="search_filter")
+     */
+    public function searchByQueryFilter(Request $request)
+    {
+        $products = $this->productSearcher->searchWithFilters($request);
+
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+        return $this->render('search/filter-searched-products.html.twig',
+            [
+                'categories' => $categories,
+                'products'   => $products
+            ]);
     }
 }

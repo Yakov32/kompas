@@ -25,7 +25,7 @@ class Product
     /**
      * @ORM\Column(type="integer")
      */
-    private $Price;
+    private $price;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
@@ -33,9 +33,19 @@ class Product
     private $category;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $imgPath;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $inOrder;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $inStock;
 
     /**
      * @ORM\Column(type="datetime")
@@ -61,12 +71,12 @@ class Product
 
     public function getPrice(): ?int
     {
-        return $this->Price;
+        return $this->price;
     }
 
-    public function setPrice(int $Price): self
+    public function setPrice(int $price): self
     {
-        $this->Price = $Price;
+        $this->price = $price;
 
         return $this;
     }

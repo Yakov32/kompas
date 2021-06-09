@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\FilterDTO;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,5 +38,20 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('name', '%'.$name. '%')
             ->getQuery()
             ->execute();
+    }
+
+    public function findByQueryWithFilters(FilterDTO $filterDTO)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.inStock = :inStock')
+            ->andWhere('p.inOrder = :inOrder')
+            ->andWhere('p.price > :minPrice')
+            ->andWhere('p.price < :maxPrice')
+            ->setParameter('inStock', $filterDTO->inStock)
+            ->setParameter('inOrder', $filterDTO->inOrder)
+            ->setParameter('minPrice', $filterDTO->minPrice)
+            ->setParameter('maxPrice', $filterDTO->maxPrice)
+            ->getQuery()
+            ->getResult();
     }
 }

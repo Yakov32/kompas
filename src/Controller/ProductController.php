@@ -6,20 +6,26 @@ namespace App\Controller;
 use App\DTO\ProductDTO;
 use App\Entity\Category;
 use App\Entity\Product;
+use App\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use const http\Client\Curl\PROXY_HTTP;
 
 
 class ProductController extends AbstractController
 {
+    private ProductService $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
     /**
-     *@Route ("/products")
+     *@Route ("/products", name="products_all")
      */
-    public function products()
+    public function allProducts()
     {
         $products = $this->getDoctrine()->getRepository(Product::class)->findAll();
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
@@ -32,11 +38,58 @@ class ProductController extends AbstractController
             ]);
     }
 
+    /**
+     * @Route ("/product/{id}", name="product_by_id")
+     */
+    public function product($id)
+    {
+        $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+        return $this->render('product/product.html.twig',
+            [
+                'product'    => $product,
+                'categories' => $categories
+            ]);
+    }
 
     /**
      * @Route("/product_add")
      */
-    public function addProduct(Request $request, ValidatorInterface $validator)
+    public function addProduct(Request $request, ProductService $productService)
+    {
+        $res = $this->productService->createProduct($request);
+
+        if ($res == true)
+        {
+            $this->addFlash('success', 'Product successly created');
+            $products   = $this->getDoctrine()->getRepository(Product::class)->findAll();
+            $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+            return $this->render('product/all_products.html.twig',
+                [
+                    'products' => $products,
+                    'categories' => $categories
+                ]);
+        }
+    }
+
+    /**
+     * @Route ("/category/{category}", name="products_by_category")
+     */
+    public function getProductsByCategory($category)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $productRepository = $em->getRepository(Product::class);
+        $products = $productRepository->findProductsByCategoryRoute($category);
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->render('product/all_products.html.twig',
+            [
+                'products' => $products,
+                'categories' => $categories]);
+    }
+
+    public function addProductOld(Request $request, ValidatorInterface $validator)
     {
         //dd($request->request->all(), $_FILES);
         $productDTO = new ProductDTO();
@@ -80,22 +133,5 @@ class ProductController extends AbstractController
         $em->flush();
 
         return new Response('success!');
-    }
-
-    /**
-     * @Route ("/category/{category}")
-     */
-    public function getProductsByCategory($category)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $productRepository = $em->getRepository(Product::class);
-        $products = $productRepository->findProductsByCategoryRoute($category);
-        $categories = $em->getRepository(Category::class)->findAll();
-
-        return $this->render('product/all_products.html.twig',
-            [
-                'products' => $products,
-                'categories' => $categories]);
     }
 }

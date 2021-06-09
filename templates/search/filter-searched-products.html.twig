@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block sidebar %}
+    <nav id="sidebar">
+        {% include 'blocks/_filter.html.twig' %}
+    </nav>
+{% endblock %}
 {% block page_content %}
     <h2>{{ products |length }} товара</h2>
 
@@ -8,7 +13,7 @@
             <div class="col-lg-4 col-md-12 col-sm-12">
                 <div class="card mb-4">
                     <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                        <a href="{{ path('product_by_id', {'id' :product.id})}}"><img src="{{ asset('/assets/images/')}}{{ product.imgPath }}" class="img" width="300" height="270"/></a>
+                        <a href="/product/{{ product.id }}"><img src="/assets/images/{{ product.imgPath }}" class="img" width="300" height="270"/></a>
                         <a href="#!">
                             <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                         </a>
@@ -37,4 +42,3 @@
 
     </div>
 {% endblock %}
-

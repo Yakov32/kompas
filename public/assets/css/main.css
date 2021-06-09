@@ -46,6 +46,16 @@ a:focus {
     margin: 40px 0;
 }
 
+.header-logo {
+    margin: 0;
+}
+
+.header-menu {
+    padding: 10px 5px;
+}
+
+
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -60,8 +70,8 @@ a:focus {
     border-radius: 10px;
     min-width: 250px;
     max-width: 250px;
-    background: #549abf;
-    color: #fff;
+    background: #d3dbe8;
+    color: #595b5c;
     transition: all 0.3s;
 }
 
@@ -73,7 +83,7 @@ a:focus {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding: 20px;
-    background: #1656ba;
+    background: #8ed3f5;
 }
 
 #sidebar ul.components {
